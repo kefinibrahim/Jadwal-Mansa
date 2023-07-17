@@ -114,8 +114,8 @@ def translate_jadwal(file_path):
 
 # Judul halaman Streamlit
 st.title("Jadwal mansa translator")
-st.write("Konversi file pdf jadwal terlebih dahulu menjadi excel melalui layanan online yang banyak tersedia, "
-         "setelah itu baru masukkan ke dalam website ini")
+st.write("Konversi file pdf jadwal terlebih dahulu menjadi excel melalui https://www.pdf2go.com/pdf-to-excel, "
+         "setelah itu baru masukkan ke dalam website ini! -kefin ibrahim")
 
 # Pengguna memilih file Excel untuk diterjemahkan
 uploaded_file = st.file_uploader("Unggah File Excel", type=["xlsx"])
