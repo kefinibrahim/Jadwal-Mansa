@@ -4,10 +4,10 @@ from openpyxl import load_workbook
 from openpyxl.styles import Alignment
 from openpyxl.utils import get_column_letter
 import pandas as pd
-from tempfile import NamedTemporaryFile
+from io import BytesIO
 
 # Path folder xlsx untuk menyimpan file terjemahan
-output_folder_path = r"D:\JadwalMansa\xlsx"
+output_folder_path = "temp"
 
 # Membuat database kode mata pelajaran
 database_mata_pelajaran = {
@@ -106,11 +106,11 @@ def translate_jadwal(file_path):
             cell.alignment = Alignment(wrapText=True)
 
     # Menyimpan jadwal terjemahan ke file Excel sementara
-    temp_file = NamedTemporaryFile(delete=False)
-    wb.save(temp_file.name)
-    temp_file.close()
+    output = BytesIO()
+    wb.save(output)
+    output.seek(0)
 
-    return temp_file.name
+    return output
 
 # Judul halaman Streamlit
 st.title("Jadwal mansa translator")
@@ -122,15 +122,8 @@ uploaded_file = st.file_uploader("Unggah File Excel", type=["xlsx"])
 
 # Jika file Excel diunggah
 if uploaded_file is not None:
-    # Menyimpan file Excel sementara
-    with open(os.path.join(output_folder_path, uploaded_file.name), "wb") as f:
-        f.write(uploaded_file.getbuffer())
-
     # Menjalankan terjemahan jadwal
-    translated_file_path = translate_jadwal(os.path.join(output_folder_path, uploaded_file.name))
+    translated_file = translate_jadwal(uploaded_file)
 
     # Pengguna dapat mengunduh file terjemahan
-    st.download_button("Unduh Hasil Terjemahan", data=open(translated_file_path, "rb").read(), file_name=uploaded_file.name)
-
-    # Menghapus file sementara setelah diunduh
-    os.remove(translated_file_path)
+    st.download_button("Unduh Hasil Terjemahan", data=translated_file, file_name=uploaded_file.name)
